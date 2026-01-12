@@ -35,8 +35,9 @@ Name: "{group}\InvoiceApp"; Filename: "{app}\run.bat"
 Name: "{commondesktop}\InvoiceApp"; Filename: "{app}\run.bat"
 
 [Registry]
+Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "INVOICE_APP_HOME"; ValueData: "{app}"; Flags: preservestringtype
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "INVOICE_PYTHON"; ValueData: "{#PythonInstallPath}"; Flags: preservestringtype
-Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "INVOICE_APP_PATH"; ValueData: "{app}"; Flags: preservestringtype
+Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "INVOICE_APP_PATH"; ValueData: "{app}\{#AppFolder}"; Flags: preservestringtype
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "MONGOD_EXE"; ValueData: "{#MongoDBInstallPath}/{#MongoDBFile}"; Flags: preservestringtype
 Root: HKCU; Subkey: "Environment"; ValueType: expandsz; ValueName: "DB_PATH"; ValueData: "{#MongoDBPath}"; Flags: preservestringtype
 
@@ -173,11 +174,11 @@ begin
 
   BatContent :=
     '@echo off' + #13#10 +
+    'set INVOICE_APP_HOME=' + ExpandConstant('{app}') + #13#10 +
     'set INVOICE_APP_PATH=' + ExpandConstant('{app}\{#AppFolder}') + #13#10 +
     'set MONGOD_EXE=' + ExpandConstant('{#MongoDBInstallPath}\{#MongoDBFile}') + #13#10 +
     'set DB_PATH=' + ExpandConstant('{#MongoDBPath}') + #13#10 +
-    'set CONFIG_PATH=%INVOICE_APP_PATH%\data\config.json' + #13#10 +
-    'set SHOP_INFO_PATH=%INVOICE_APP_PATH%\data\shop_info.json' + #13#10 +
+    'set CONFIG_DIR=%INVOICE_APP_HOME%\user_data' + #13#10 +
     '"%INVOICE_PYTHON%\python.exe" "%INVOICE_APP_PATH%\main.py"' + #13#10;
 
   SaveStringToFile(BatPath, BatContent, False);
